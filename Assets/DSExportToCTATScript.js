@@ -14,6 +14,7 @@ var g = null;
 
 
 
+
 function runTask2() {
   //console.log("button pressed");
 
@@ -441,7 +442,10 @@ function runTask1GivenJSON(ggraph) {
     graph = ggraph;
   }
   else {
+
+
     buildGraphForProblem();  //sets global graph
+
   }
   //console.log("button pressed 2");
   cy.json(JSON.parse(buildJSON(graph, edgeFreqs)));
@@ -455,8 +459,8 @@ function runTask1GivenJSON(ggraph) {
     componentSpacing: 80,
     nodeRepulsion: function (node) { return 1020480; },
     nodeOverlap: 4,
-    idealEdgeLength: function (edge) { return 50; },
-    edgeElasticity: function (edge) { return 32; },
+    idealEdgeLength: function (edge) { return 200; },
+    edgeElasticity: function (edge) { return 20; },
     nestingFactor: 1.2,
     gravity: 0.1
   });
@@ -574,17 +578,17 @@ var specialInputCompare = "removeSpaces";
 function inputCompare(a, b) {
   let vt = new CTATVariableTable()
   let lp = new CTATLogicParser(vt)
-  if (a== "-1" && b == "-1")
+  if (a == "-1" && b == "-1")
     return 0
 
   // parse first then compare
-  if (lp.logicParse(a) && lp.logicParse(b) ){
+  if (lp.logicParse(a) && lp.logicParse(b)) {
     console.log("locale compare", a.localeCompare(b))
     console.log("logic identical", lp.logicIdentical(a, b))
     return lp.logicIdentical(a, b) === true ? 0 : 1
-    
+
   }
-    
+
   switch (specialInputCompare) {
     case "removeSpaces": {
       let rs = new RegExp("\\s", "g");
@@ -596,7 +600,20 @@ function inputCompare(a, b) {
   }
 }
 
+
+
+// will be mostly focusing on this function
+// or we can make a json file out of this question and put it in d3
+
 function buildGraphForProblem() {
+  let sankeyData = {
+    "nodes": ["start"],
+    "links": [],
+    'sinksRight': false
+  }
+  // logic variable
+  let vt = new CTATVariableTable()
+  let lp = new CTATLogicParser(vt)
   //get params from the form (it should have defaults too)
   //for problem #:
   var chosenProblem = 0;
@@ -689,6 +706,10 @@ function buildGraphForProblem() {
   nodeCounter++;
   var edgeCounter = 0;
   graph.addNode(startNode);
+  console.log("startNode", startNode.getClassName())
+  console.log("startNode", startNode)
+
+
   for (i = 0; i < entries.length; i++) {
     var previousNode = startNode;
     var studentId = entries[i][0];
@@ -708,7 +729,7 @@ function buildGraphForProblem() {
       for (var j = 0; j < linksArray.length && !matched; j++) {
         var defSAI = linksArray[j].getDefaultSAI();
         console.log(defSAI.getInput())
-        console.log("stuinput", input)
+        console.log("logic stringify", lp.logicStringify(input))
         if (defSAI.getSelection().localeCompare(selection) == 0 &&
           defSAI.getAction().localeCompare(action) == 0 &&
           inputCompare(defSAI.getInput(), input) == 0) {
@@ -756,6 +777,61 @@ function buildGraphForProblem() {
   //need to enumerate all paths in the graph from root to leaves
   //for all leaves, do dijkstra's to get path to root
 
+  let nodes = [];
+  for (let i = 0; i < entries.length; i++) {
+
+    var previousNode = startNode;
+    var studentId = entries[i][0];
+    //console.log(studentId);
+    var sais = entries[i][1];
+
+    for (let ind = 0; ind < sais.length; ind++) {
+      let selection = sais[ind][1][0]
+      let action = sais[ind][1][1]
+      let input = sais[ind][1][2]
+      let evaluation = sais[ind][1][3]
+
+      // if (ind === 0 && nodes.indexOf(input) == -1){
+      //   nodes.push(input)
+      // }
+
+      let inArray = false;
+
+      if (ind === 0) {
+        for (let index = 0; index < nodes.length; index++) {
+          if (inputCompare(nodes[index], input)==0){
+            inArray = true;
+          }
+        }
+
+        if(!inArray){
+          nodes.push(input)
+        }
+      }
+
+
+      let prevOutLinks = previousNode.getOutLinks()
+      linksArray = Array.from(prevOutLinks)
+      let matched = false
+      for (let j = 0; j < linksArray.length; j++) {
+        let defSAI = linksArray[j].getDefaultSAI()
+
+        if (defSAI.getSelection().localeCompare(selection) == 0 &&
+          defSAI.getAction().localeCompare(action) == 0 &&
+          inputCompare(defSAI.getInput(), input) == 0) {
+          // update existing json
+          matched = true
+        }
+      }
+
+
+      if (matched) {
+        continue
+      }
+
+    }
+  }
+  console.log("sankey data", nodes)
   return [graph, edgeFreqs];
 }
 
@@ -842,6 +918,7 @@ function clone(obj) {
 
 //convert transaction to JSON format in which detectors
 //  would typically receive transactions
+
 function constructTransaction(e) {
   //construct JSON message and return JSON
 
