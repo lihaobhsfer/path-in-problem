@@ -11,6 +11,9 @@ var ui;
 var interfaceFilePath;
 var elts = [];
 var g = null;
+
+
+
 function runTask2() {
   //console.log("button pressed");
 
@@ -50,42 +53,42 @@ function TracePathToNode() {
 }
 
 
-function getInterface() {
-  interfaceFilePath = null;
-  location.search.split(/[?&]/).forEach(function (q) {
-    let NV = q.split(/=/);
-    if (NV.length > 1 && NV[0] == "interfaceFilePath")
-      interfaceFilePath = NV[1]
-  });
-  interfaceFilePath = (interfaceFilePath || document.getElementById('fileItem2').files[0]);
-  console.log(interfaceFilePath)
-}
+// function getInterface() {
+//   interfaceFilePath = null;
+//   location.search.split(/[?&]/).forEach(function (q) {
+//     let NV = q.split(/=/);
+//     if (NV.length > 1 && NV[0] == "interfaceFilePath")
+//       interfaceFilePath = NV[1]
+//   });
+//   interfaceFilePath = (interfaceFilePath || document.getElementById('fileItem2').files[0]);
+//   console.log(interfaceFilePath)
+// }
 
-//<input type="button" value="Add Selected Path to BG" id="bgAddButton" onclick="addPathToBG()" />
-function addPathToBG(correct) {
-  console.log("addPathToBG called");
-  path = cy.$(":selected");
+// //<input type="button" value="Add Selected Path to BG" id="bgAddButton" onclick="addPathToBG()" />
+// function addPathToBG(correct) {
+//   console.log("addPathToBG called");
+//   path = cy.$(":selected");
 
-  path.forEach(function (ele) {
-    if (!ele.isNode()) {
-      if (!("correct" in ele.data())) {
-        if (correct == 1)
-          ele.json({ data: { correct: 1 } })
-        else if (correct == 0)
-          ele.json({ data: { correct: 0 } })
-        else
-          ele.json({ data: { correct: -1 } })
-      }
-    }
-  });
+//   path.forEach(function (ele) {
+//     if (!ele.isNode()) {
+//       if (!("correct" in ele.data())) {
+//         if (correct == 1)
+//           ele.json({ data: { correct: 1 } })
+//         else if (correct == 0)
+//           ele.json({ data: { correct: 0 } })
+//         else
+//           ele.json({ data: { correct: -1 } })
+//       }
+//     }
+//   });
 
-  //cy2.add(path);
-  //need to do correctness info
-  //if it's an edge style thing, then need a new data property for each edge/node right
-  //idk how to do this, UI-wise
-  //bleh
-  //cy2.fit();
-}
+// cy2.add(path);
+// need to do correctness info
+// if it's an edge style thing, then need a new data property for each edge/node right
+// idk how to do this, UI-wise
+// bleh
+// cy2.fit();
+// }
 
 
 function getSelectedPath() {
@@ -112,52 +115,52 @@ function getSelectedPath() {
   return path;
 }
 
-function addPathXToInterface() {
-  console.log("addPathXToInterface called");
+// function addPathXToInterface() {
+//   console.log("addPathXToInterface called");
 
-  getInterface();
+//   getInterface();
 
-  cy.$().unselect();
-  x = document.getElementById("currentPathNum").value;
-  pathNum = parseInt(x);
-  console.log(x);
-  if (!isNaN(pathNum)) {
-    path = allPaths[pathNum - 1];
-    path.select();
-    var msgs = [], builder = new CTATTutoringServiceMessageBuilder();
-    path.edges().forEach(function (edge) {
-      msgs.push(builder.createInterfaceActionMessage(CTATGuid.guid(), new CTATSAI(edge.data("selection"),
-        edge.data("action"),
-        edge.data("input"))));
-    });
-    if (ui == null || ui.closed) {
-      //this is hardcoded-ish for now
-      ui = window.open(interfaceFilePath.name + "?question_file=../FinalBRDs/empty.brd&show_debug_traces=basic", "_blank");
-      ui.window.onload = (function () {
-        console.log("onload");
-        for (let m in msgs) ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
-      }).bind(this);
-      ui.window.onclose = (function () {
-        ui = null;
-      }).bind(this);
-    }
-    else {
-      ui.window.close();
-      //we want to reset the UI somehow
-      ui = window.open(interfaceFilePath.name + "?question_file=../FinalBRDs/empty.brd&show_debug_traces=basic", "_blank");
-      ui.window.onload = (function () {
-        console.log("onload");
-        for (let m in msgs) ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
-      }).bind(this);
-      ui.window.onclose = (function () {
-        ui = null;
-      }).bind(this);
-      /*for(let m in msgs) {
-          ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
-      }*/
-    }
-  }
-}
+//   cy.$().unselect();
+//   x = document.getElementById("currentPathNum").value;
+//   pathNum = parseInt(x);
+//   console.log(x);
+//   if (!isNaN(pathNum)) {
+//     path = allPaths[pathNum - 1];
+//     path.select();
+//     var msgs = [], builder = new CTATTutoringServiceMessageBuilder();
+//     path.edges().forEach(function (edge) {
+//       msgs.push(builder.createInterfaceActionMessage(CTATGuid.guid(), new CTATSAI(edge.data("selection"),
+//         edge.data("action"),
+//         edge.data("input"))));
+//     });
+//     if (ui == null || ui.closed) {
+//       //this is hardcoded-ish for now
+//       ui = window.open(interfaceFilePath.name + "?question_file=../FinalBRDs/empty.brd&show_debug_traces=basic", "_blank");
+//       ui.window.onload = (function () {
+//         console.log("onload");
+//         for (let m in msgs) ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
+//       }).bind(this);
+//       ui.window.onclose = (function () {
+//         ui = null;
+//       }).bind(this);
+//     }
+//     else {
+//       ui.window.close();
+//       //we want to reset the UI somehow
+//       ui = window.open(interfaceFilePath.name + "?question_file=../FinalBRDs/empty.brd&show_debug_traces=basic", "_blank");
+//       ui.window.onload = (function () {
+//         console.log("onload");
+//         for (let m in msgs) ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
+//       }).bind(this);
+//       ui.window.onclose = (function () {
+//         ui = null;
+//       }).bind(this);
+//       /*for(let m in msgs) {
+//           ui.window.CTAT.ToolTutor.sendToInterface(msgs[m]);
+//       }*/
+//     }
+//   }
+// }
 
 function nextPath() {
   currentPathInd = parseInt(document.getElementById("currentPathNum").value);
@@ -449,7 +452,7 @@ function runTask1GivenJSON(ggraph) {
     boundingBox: undefined,
     nodeDimensionsIncludeLabels: false,
     randomize: true,
-    componentSpacing: 40,
+    componentSpacing: 80,
     nodeRepulsion: function (node) { return 1020480; },
     nodeOverlap: 4,
     idealEdgeLength: function (edge) { return 50; },
@@ -569,6 +572,19 @@ var specialInputCompare = "removeSpaces";
  * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
  */
 function inputCompare(a, b) {
+  let vt = new CTATVariableTable()
+  let lp = new CTATLogicParser(vt)
+  if (a== "-1" && b == "-1")
+    return 0
+
+  // parse first then compare
+  if (lp.logicParse(a) && lp.logicParse(b) ){
+    console.log("locale compare", a.localeCompare(b))
+    console.log("logic identical", lp.logicIdentical(a, b))
+    return lp.logicIdentical(a, b) === true ? 0 : 1
+    
+  }
+    
   switch (specialInputCompare) {
     case "removeSpaces": {
       let rs = new RegExp("\\s", "g");
@@ -691,6 +707,8 @@ function buildGraphForProblem() {
       var matched = false
       for (var j = 0; j < linksArray.length && !matched; j++) {
         var defSAI = linksArray[j].getDefaultSAI();
+        console.log(defSAI.getInput())
+        console.log("stuinput", input)
         if (defSAI.getSelection().localeCompare(selection) == 0 &&
           defSAI.getAction().localeCompare(action) == 0 &&
           inputCompare(defSAI.getInput(), input) == 0) {
@@ -738,7 +756,7 @@ function buildGraphForProblem() {
   //need to enumerate all paths in the graph from root to leaves
   //for all leaves, do dijkstra's to get path to root
 
-  //return [graph,edgeFreqs];
+  return [graph, edgeFreqs];
 }
 
 //
@@ -809,18 +827,18 @@ function clone(obj) {
 
 
 
-function simulateNewProblem(studentId, problemName) {
-  console.log("simulateNewProblem(", studentId, problemName, ")");
-  problemScripts.push({ user_guid: studentId, studentInterface: "", problemFile: problemName, script: [] });
-  //also clear BKT pastSteps
-  pastSteps = {};
-}
+// function simulateNewProblem(studentId, problemName) {
+//   console.log("simulateNewProblem(", studentId, problemName, ")");
+//   problemScripts.push({ user_guid: studentId, studentInterface: "", problemFile: problemName, script: [] });
+//   //also clear BKT pastSteps
+//   pastSteps = {};
+// }
 
-function simulateNewStudent(studentId, problemName) {
-  simulateNewProblem(studentId, problemName);
-  //also clear BKT pastSteps
-  BKThistory = {};
-}
+// function simulateNewStudent(studentId, problemName) {
+//   simulateNewProblem(studentId, problemName);
+//   //also clear BKT pastSteps
+//   BKThistory = {};
+// }
 
 //convert transaction to JSON format in which detectors
 //  would typically receive transactions
@@ -930,45 +948,45 @@ function getRowVariables(thisrow) {
   return true;
 }
 
-function update_BKT(t) {
+// function update_BKT(t) {
 
-  var currStep = t.tool_data.selection;
-  for (var i in currSkills) {
-    var skill = currSkills[i];
+//   var currStep = t.tool_data.selection;
+//   for (var i in currSkills) {
+//     var skill = currSkills[i];
 
-    if (!(currStep in pastSteps)) {
-      if (!(skill in BKThistory)) {    //if this skill has not been encountered before
-        BKThistory[skill] = clone(BKTparams);
-      }
+//     if (!(currStep in pastSteps)) {
+//       if (!(skill in BKThistory)) {    //if this skill has not been encountered before
+//         BKThistory[skill] = clone(BKTparams);
+//       }
 
-      var p_know_tminus1 = BKThistory[skill]["p_know"];
-      var p_slip = BKThistory[skill]["p_slip"];
-      var p_guess = BKThistory[skill]["p_guess"];
-      var p_transit = BKThistory[skill]["p_transit"];
+//       var p_know_tminus1 = BKThistory[skill]["p_know"];
+//       var p_slip = BKThistory[skill]["p_slip"];
+//       var p_guess = BKThistory[skill]["p_guess"];
+//       var p_transit = BKThistory[skill]["p_transit"];
 
 
-      if (t.tutor_data.action_evaluation.toLowerCase() == "correct") {
-        var p_know_given_obs = (p_know_tminus1 * (1 - p_slip)) / ((p_know_tminus1 * (1 - p_slip)) + ((1 - p_know_tminus1) * p_guess));
-      }
-      else {
-        var p_know_given_obs = (p_know_tminus1 * p_slip) / ((p_know_tminus1 * p_slip) + ((1 - p_know_tminus1) * (1 - p_guess)));
-      }
+//       if (t.tutor_data.action_evaluation.toLowerCase() == "correct") {
+//         var p_know_given_obs = (p_know_tminus1 * (1 - p_slip)) / ((p_know_tminus1 * (1 - p_slip)) + ((1 - p_know_tminus1) * p_guess));
+//       }
+//       else {
+//         var p_know_given_obs = (p_know_tminus1 * p_slip) / ((p_know_tminus1 * p_slip) + ((1 - p_know_tminus1) * (1 - p_guess)));
+//       }
 
-      BKThistory[skill]["p_know"] = p_know_given_obs + (1 - p_know_given_obs) * p_transit;
+//       BKThistory[skill]["p_know"] = p_know_given_obs + (1 - p_know_given_obs) * p_transit;
 
-      //following TutorShop, round down to two decimal places
-      BKThistory[skill]["p_know"] = Math.floor(BKThistory[skill]["p_know"] * 100) / 100;
+//       //following TutorShop, round down to two decimal places
+//       BKThistory[skill]["p_know"] = Math.floor(BKThistory[skill]["p_know"] * 100) / 100;
 
-    }
+//     }
 
-  }
+//   }
 
-  //update isNotFirstAttempt
-  if (!(currStep in pastSteps)) {
-    pastSteps[currStep] = true;
-  }
+//   //update isNotFirstAttempt
+//   if (!(currStep in pastSteps)) {
+//     pastSteps[currStep] = true;
+//   }
 
-}
+// }
 
 function getAllIndices(arr, val) {
   var indices = [], i;
@@ -1059,37 +1077,37 @@ function buildOptions() {
 //path = path.split("/").slice(0,-1).join("/");
 
 
-function downloadCSV(args) {
-  // var data, filename, link;
-  // var csv = outputStr;
-  // if (csv == null) return;
+// function downloadCSV(args) {
+//   // var data, filename, link;
+//   // var csv = outputStr;
+//   // if (csv == null) return;
 
-  // filename = args.filename || 'export.csv';
+//   // filename = args.filename || 'export.csv';
 
-  // if (!csv.match(/^data:text\/csv/i)) {
-  //     csv = 'data:text/csv;charset=utf-8,' + csv;
-  // }
-  // data = encodeURI(csv);
+//   // if (!csv.match(/^data:text\/csv/i)) {
+//   //     csv = 'data:text/csv;charset=utf-8,' + csv;
+//   // }
+//   // data = encodeURI(csv);
 
-  // link = document.createElement('a');
-  // link.setAttribute('href', data);
-  // link.setAttribute('download', filename);
-  // link.click();
+//   // link = document.createElement('a');
+//   // link.setAttribute('href', data);
+//   // link.setAttribute('download', filename);
+//   // link.click();
 
-  var csvData = new Blob([outputStr], { type: 'text/csv;charset=utf-8;' });
+//   var csvData = new Blob([outputStr], { type: 'text/csv;charset=utf-8;' });
 
-  exportFilename = args.filename || 'export.csv';
+//   exportFilename = args.filename || 'export.csv';
 
-  //IE11 & Edge
-  if (navigator.msSaveBlob) {
-    navigator.msSaveBlob(csvData, exportFilename);
-  } else {
-    //In FF link must be added to DOM to be clicked
-    var link = document.createElement('a');
-    link.href = window.URL.createObjectURL(csvData);
-    link.setAttribute('download', exportFilename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-}
+//   //IE11 & Edge
+//   if (navigator.msSaveBlob) {
+//     navigator.msSaveBlob(csvData, exportFilename);
+//   } else {
+//     //In FF link must be added to DOM to be clicked
+//     var link = document.createElement('a');
+//     link.href = window.URL.createObjectURL(csvData);
+//     link.setAttribute('download', exportFilename);
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   }
+// }
