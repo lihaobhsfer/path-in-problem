@@ -709,14 +709,17 @@ function buildGraphForProblem() {
   console.log("startNode", startNode.getClassName())
   console.log("startNode", startNode)
 
+  let nodesArray = []
+  let linksArray = []
+  let edgesArray = []
+
 
   // for (i = 0; i < entries.length; i++) {
-  for (i = 0; i < 2; i++) {
-    var previousNode = startNode;
+  // testing for 2 students
+  for (i = 0; i < 10; i++) {
+    var currentNode = startNode;
     var studentId = entries[i][0];
-    //console.log(studentId);
     var sais = entries[i][1];
-    //console.log(sais.length);
     for (var ind = 0; ind < sais.length; ind++) {
       var selection = sais[ind][1][0];
       var action = sais[ind][1][1];
@@ -724,33 +727,34 @@ function buildGraphForProblem() {
       var evaluation = sais[ind][1][3];
       console.log("sais[" + ind + "][1]: " + selection + " " + action + " " + input + " " + evaluation);
 
-      // instead of getting out links for only the previous node
-      // we want to traverse the graph
-      var prevOutLinks = previousNode.getOutLinks()
-
-      var prevOutNodes = prevOutLinks.forEach(link => {
-        
-      })
-
-      console.log("prevOutNodes", prevOutNodes)
-
-
-
-      linksArray = Array.from(prevOutLinks);
       var matched = false
-      for (var j = 0; j < linksArray.length && !matched; j++) {
-        var defSAI = linksArray[j].getDefaultSAI();
+      // for (var j = 0; j < linksArray.length && !matched; j++) {
+
+      // traversing all nodes
+      for (var j = 0; j < nodesArray.length && !matched; j++) {
+        // var defSAI = linksArray[j].getDefaultSAI();
+        var defSAI = nodesArray[j].link.getDefaultSAI();
         console.log(defSAI.getInput())
         console.log("logic stringify", lp.logicStringify(input))
         if (defSAI.getSelection().localeCompare(selection) == 0 &&
           defSAI.getAction().localeCompare(action) == 0 &&
           inputCompare(defSAI.getInput(), input) == 0) {
 
-          //increment the freq of link at linksArray[j]...
-          edgeFreqs[linksArray[j].getUniqueID()] += 1;
+          // increment the freq for edge with the same source and target
+          // ignoring this part for now
+          // edgeFreqs[linksArray[j].getUniqueID()] += 1;
+
+
+          for (var k = 0; k < edgesArray.length; k++) {
+            if (edgesArray[k].getPrevNode() === currentNode.getNodeID() && edgesArray[k].getNextNode() === nodesArray[j].getNodeID()) {
+              edgeFreqs[edgesArray[k].getUniqueID()] += 1
+              console.log("freq:",edgeFreqs[edgesArray[k].getUniqueID()])
+            }
+          }
+
           //console.log(edgeFreqs[linksArray[j].getUniqueID()]);
           matched = true
-          previousNode = graph.getNode(linksArray[j].getNextNode());
+          currentNode = graph.getNode(nodesArray[j].getNodeID())
         }
       }
       if (matched) {
@@ -762,7 +766,9 @@ function buildGraphForProblem() {
       graph.addNode(newNode)
       console.log("newNode.name", newNode.getName())
       edgeFreqs[edgeCounter] = 1;
-      var newLink = new CTATExampleTracerLink(edgeCounter, previousNode.getNodeID(), newNode.getNodeID());
+
+      var newLink = new CTATExampleTracerLink(edgeCounter, currentNode.getNodeID(), newNode.getNodeID());
+      
       newLink.setActionType(/^CORRECT/i.test(evaluation) ? CTATExampleTracerLink.CORRECT_ACTION : CTATExampleTracerLink.FIREABLE_BUGGY_ACTION);
       var SelectionMatchers = new CTATMatcher();
       var ActionMatchers = new CTATMatcher();
@@ -773,15 +779,19 @@ function buildGraphForProblem() {
       vectorMatcher.setDefaultSAI(new CTATSAI(selection, action, input, null));
       //vectorMatcher.setCaseInsensitive(caseInsensitive);
       //vectorMatcher.setLinkTriggered(linkTriggered);
-      newLink.setMatcher(vectorMatcher);
+      newLink.setMatcher(vectorMatcher)
       // OK so I need to make a new matcher and give it the selection, action, and input
       graph.addLink(newLink, null);//don't worry about groups for now
-      previousNode.addOutLink(newLink);
+      edgesArray.push(newLink)
+      console.log("newLink:", newLink)
+      currentNode.addOutLink(newLink);
       newNode.addInLink(newLink);
-      
+
       nodeCounter++;
       edgeCounter++;
-      previousNode = newNode;
+      newNode.link = newLink
+      nodesArray.push(newNode)
+      currentNode = newNode;
     }
   }
 

@@ -65,7 +65,7 @@ function buildJSON(graph, edgeFreqs) {
                 style: {
                     'line-color': 'gray',
                     'target-arrow-color': 'gray',
-                    'label': 'data(freq)',
+                    'label': 'data(info)',
                     'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
@@ -78,7 +78,7 @@ function buildJSON(graph, edgeFreqs) {
                 style: {
                     'line-color': 'red',
                     'target-arrow-color': 'red',
-                    'label': 'data(freq)',
+                    'label': 'data(info)',
                     'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
@@ -91,6 +91,8 @@ function buildJSON(graph, edgeFreqs) {
     var addedNodes = [];
 
     //so graph has no way of getting the # of nodes... guess i have to start with edges
+    // Hao: what...
+    // I need to start with nodes!
 
     var links = graph.getLinks();//edges
     for (i = 0; i < links.length; i++) {
@@ -141,12 +143,10 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
             data: {
                 id: id,
                 CTATid: id,
-                source: source,
-                target: target,
                 selection: selection,
                 action: action,
                 input: input,
-                info: makeEdgeLabel(freq, source, target, selection, action, input),  // was selection+"-"+action+"-"+input
+                info: makeNodeLabel(freq, selection, action, input),  // was selection+"-"+action+"-"+input
                 freq: freq,
                 maxFreq: maxFreq
             },
@@ -210,10 +210,20 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
 
 function makeEdgeLabel(freq, source, target, selection, action, input) {
     let result = "";
-    if (freq && freq > 1) result += (freq + ": ");
+    // if (freq && freq > 1) result += (freq + ": ");
     if (/^done$/i.test(selection)) result += "Done";
     else if (/^[a-z]*_table_c[0-9]+/i.test(selection)) result += input;
     else result += (selection + "-" + input);
+    return result;
+}
+
+function makeNodeLabel(freq, selection, action, input) {
+    let result = "";
+    if (freq && freq > 1) result += (freq + ": ");
+    if (/^done$/i.test(selection)) result += "Done";
+    else if (/^[a-z]*_table_c[0-9]+/i.test(selection)) result += input;
+    // else result += (selection + "-" + input);
+    else result += (selection);
     return result;
 }
 
