@@ -711,7 +711,7 @@ function buildGraphForProblem() {
 
 
   // for (i = 0; i < entries.length; i++) {
-  for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++) {
     var previousNode = startNode;
     var studentId = entries[i][0];
     //console.log(studentId);
@@ -726,16 +726,10 @@ function buildGraphForProblem() {
 
       // instead of getting out links for only the previous node
       // we want to traverse the graph
-      var prevOutLinks = previousNode.getOutLinks()
-
-      var prevOutNodes = prevOutLinks.forEach(link => {
-        
-      })
-
-      console.log("prevOutNodes", prevOutNodes)
+      var prevOutLinks = previousNode.getOutLinks();
 
 
-
+      
       linksArray = Array.from(prevOutLinks);
       var matched = false
       for (var j = 0; j < linksArray.length && !matched; j++) {
@@ -745,7 +739,7 @@ function buildGraphForProblem() {
         if (defSAI.getSelection().localeCompare(selection) == 0 &&
           defSAI.getAction().localeCompare(action) == 0 &&
           inputCompare(defSAI.getInput(), input) == 0) {
-
+          
           //increment the freq of link at linksArray[j]...
           edgeFreqs[linksArray[j].getUniqueID()] += 1;
           //console.log(edgeFreqs[linksArray[j].getUniqueID()]);
@@ -758,9 +752,7 @@ function buildGraphForProblem() {
       }
       //new edge otherwise
       var newNode = new CTATExampleTracerNode(nodeCounter);
-      newNode.setNodeName(newNode.getNodeID)
-      graph.addNode(newNode)
-      console.log("newNode.name", newNode.getName())
+      graph.addNode(newNode);
       edgeFreqs[edgeCounter] = 1;
       var newLink = new CTATExampleTracerLink(edgeCounter, previousNode.getNodeID(), newNode.getNodeID());
       newLink.setActionType(/^CORRECT/i.test(evaluation) ? CTATExampleTracerLink.CORRECT_ACTION : CTATExampleTracerLink.FIREABLE_BUGGY_ACTION);
@@ -778,7 +770,6 @@ function buildGraphForProblem() {
       graph.addLink(newLink, null);//don't worry about groups for now
       previousNode.addOutLink(newLink);
       newNode.addInLink(newLink);
-      
       nodeCounter++;
       edgeCounter++;
       previousNode = newNode;
@@ -792,60 +783,60 @@ function buildGraphForProblem() {
 
   // used to find all distinct input for the first step
   let nodes = [];
-  // for (let i = 0; i < entries.length; i++) {
+  for (let i = 0; i < entries.length; i++) {
 
-  //   var previousNode = startNode;
-  //   var studentId = entries[i][0];
-  //   //console.log(studentId);
-  //   var sais = entries[i][1];
+    var previousNode = startNode;
+    var studentId = entries[i][0];
+    //console.log(studentId);
+    var sais = entries[i][1];
 
-  //   for (let ind = 0; ind < sais.length; ind++) {
-  //     let selection = sais[ind][1][0]
-  //     let action = sais[ind][1][1]
-  //     let input = sais[ind][1][2]
-  //     let evaluation = sais[ind][1][3]
+    for (let ind = 0; ind < sais.length; ind++) {
+      let selection = sais[ind][1][0]
+      let action = sais[ind][1][1]
+      let input = sais[ind][1][2]
+      let evaluation = sais[ind][1][3]
 
-  //     // if (ind === 0 && nodes.indexOf(input) == -1){
-  //     //   nodes.push(input)
-  //     // }
+      // if (ind === 0 && nodes.indexOf(input) == -1){
+      //   nodes.push(input)
+      // }
 
-  //     let inArray = false;
+      let inArray = false;
 
-  //     if (ind === 0) {
-  //       for (let index = 0; index < nodes.length; index++) {
-  //         if (inputCompare(nodes[index], input) == 0) {
-  //           inArray = true;
-  //         }
-  //       }
+      if (ind === 0) {
+        for (let index = 0; index < nodes.length; index++) {
+          if (inputCompare(nodes[index], input)==0){
+            inArray = true;
+          }
+        }
 
-  //       if (!inArray) {
-  //         nodes.push(input)
-  //       }
-  //     }
-
-
-  //     let prevOutLinks = previousNode.getOutLinks()
-  //     linksArray = Array.from(prevOutLinks)
-  //     let matched = false
-  //     for (let j = 0; j < linksArray.length; j++) {
-  //       let defSAI = linksArray[j].getDefaultSAI()
-
-  //       if (defSAI.getSelection().localeCompare(selection) == 0 &&
-  //         defSAI.getAction().localeCompare(action) == 0 &&
-  //         inputCompare(defSAI.getInput(), input) == 0) {
-  //         // update existing json
-  //         matched = true
-  //       }
-  //     }
+        if(!inArray){
+          nodes.push(input)
+        }
+      }
 
 
-  //     if (matched) {
-  //       continue
-  //     }
+      let prevOutLinks = previousNode.getOutLinks()
+      linksArray = Array.from(prevOutLinks)
+      let matched = false
+      for (let j = 0; j < linksArray.length; j++) {
+        let defSAI = linksArray[j].getDefaultSAI()
 
-  //   }
-  // }
-  // console.log("sankey data", nodes)
+        if (defSAI.getSelection().localeCompare(selection) == 0 &&
+          defSAI.getAction().localeCompare(action) == 0 &&
+          inputCompare(defSAI.getInput(), input) == 0) {
+          // update existing json
+          matched = true
+        }
+      }
+
+
+      if (matched) {
+        continue
+      }
+
+    }
+  }
+  console.log("sankey data", nodes)
   return [graph, edgeFreqs];
 }
 

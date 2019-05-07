@@ -5,7 +5,7 @@ function runTask1() {
     });
     var g = CTAT.ToolTutor.tutor.getGraph();
     cy.json(JSON.parse(buildJSON(g)));
-    var layout = cy.layout({ name: 'cose' });
+    var layout = cy.layout({name: 'cose'});
     layout.run();
 }
 
@@ -19,19 +19,18 @@ function buildJSON(graph, edgeFreqs) {
                 selector: 'node',
                 style: {
                     //'background-color': 'green',
-                    'label': 'data(info)', // was 'data(id)',
+                    'label': ' ', // was 'data(id)',
                     "text-valign": "center",
                     "text-halign": "center"
                 }
             },
 
             {
-                selector: 'node[id="0"]',
-                style: {
-                    'background-color': 'purple',
-                    'label': 'data(id)',
-                    "text-valign": "center",
-                    "text-halign": "center"
+                selector: 'node[id="0"]', 
+                style: {'background-color': 'purple',
+                        'label': 'data(id)',
+                        "text-valign": "center",
+                        "text-halign": "center"
                 }
             },
 
@@ -39,7 +38,7 @@ function buildJSON(graph, edgeFreqs) {
                 selector: 'edge',
                 style: {
                     // 'line-color': 'green',
-                    'label': 'data(freq)',
+                    'label': 'data(info)',
                     'width': 'mapData(freq, 0, 1, 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
@@ -49,40 +48,37 @@ function buildJSON(graph, edgeFreqs) {
 
             {
                 selector: 'edge[correct=1]',
-                style: {
-                    'line-color': 'green',
-                    'target-arrow-color': 'green',
-                    'label': 'data(freq)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
-                    'target-arrow-shape': 'triangle',
-                    'curve-style': 'bezier',
-                    'min-zoomed-font-size': '10'
+                style: {'line-color': 'green',
+                        'target-arrow-color': 'green',
+                        'label': 'data(info)',
+                        //'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'min-zoomed-font-size': '10'
                 }
             },
 
             {
                 selector: 'edge[correct=-1]',
-                style: {
-                    'line-color': 'gray',
-                    'target-arrow-color': 'gray',
-                    'label': 'data(freq)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
-                    'target-arrow-shape': 'triangle',
-                    'curve-style': 'bezier',
-                    'min-zoomed-font-size': '10'
+                style: {'line-color': 'gray',
+                        'target-arrow-color': 'gray',
+                        'label': 'data(info)',
+                        //'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'min-zoomed-font-size': '10'
                 }
             },
 
             {
                 selector: 'edge[correct=0]',
-                style: {
-                    'line-color': 'red',
-                    'target-arrow-color': 'red',
-                    'label': 'data(freq)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
-                    'target-arrow-shape': 'triangle',
-                    'curve-style': 'bezier',
-                    'min-zoomed-font-size': '10'
+                style: {'line-color': 'red',
+                        'target-arrow-color': 'red',
+                        'label': 'data(info)',
+                        //'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'min-zoomed-font-size': '10'
                 }
             }
         ]
@@ -102,20 +98,13 @@ function buildJSON(graph, edgeFreqs) {
         if (!addedNodes.includes(prevId)) {
             var prevNode = graph.getNode(prevId);
             var pos = prevNode.getVisualData();
-            addNode(jsonGraph, prevId, pos ? parseInt(pos.x) : null,
-                pos ? parseInt(pos.y) : null, matcher.getSelection(),
-                matcher.getAction(), matcher.getInput(),
-                freq, maxFreq, links[i].getActionType());
-
+            addNode(jsonGraph, prevId, pos ? parseInt(pos.x) : null, pos ? parseInt(pos.y) : null);
             addedNodes.push(prevId);
         }
         if (!addedNodes.includes(nextId)) {
             var nextNode = graph.getNode(nextId);
             var pos = nextNode.getVisualData();
-            addNode(jsonGraph, nextId, pos ? parseInt(pos.x) : null,
-                pos ? parseInt(pos.y) : null, matcher.getSelection(),
-                matcher.getAction(), matcher.getInput(),
-                freq, maxFreq, links[i].getActionType());
+            addNode(jsonGraph, nextId, pos ? parseInt(pos.x) : null, pos ? parseInt(pos.y) : null);
             addedNodes.push(nextId);
         }
 
@@ -124,33 +113,24 @@ function buildJSON(graph, edgeFreqs) {
         var freq = edgeFreqs[links[i].getUniqueID()];
         //if (freq < edgeFreq)
         //freq = 0;
-        addEdge(jsonGraph, links[i].getUniqueID(), prevId, nextId,
-            matcher.getSelection(), matcher.getAction(), matcher.getInput(), freq, maxFreq, links[i].getActionType());
+        addEdge(jsonGraph, links[i].getUniqueID(), prevId, nextId, 
+                matcher.getSelection(), matcher.getAction(), matcher.getInput(), freq, maxFreq, links[i].getActionType());
     }
     BRDjson = jsonGraph;
 
     return JSON.stringify(jsonGraph);
-}
-var BRDjson = null;
+} 
+var BRDjson = null; 
 
-function addNode(jsonGraph, id, x, y, source, target, selection, action, input, freq, maxFreq, actionType) {
+function addNode(jsonGraph, id, x, y) {
     if (x == null) {
         var node = {
             group: 'nodes',
-
+            
             data: {
-                id: id,
-                CTATid: id,
-                source: source,
-                target: target,
-                selection: selection,
-                action: action,
-                input: input,
-                info: makeEdgeLabel(freq, source, target, selection, action, input),  // was selection+"-"+action+"-"+input
-                freq: freq,
-                maxFreq: maxFreq
+                id: id
             },
-
+            
             scratch: {
 
             },
@@ -173,20 +153,11 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
     else {
         var node = {
             group: 'nodes',
-
+            
             data: {
-                id: id,
-                CTATid: id,
-                source: source,
-                target: target,
-                selection: selection,
-                action: action,
-                input: input,
-                info: makeEdgeLabel(freq, source, target, selection, action, input),  // was selection+"-"+action+"-"+input
-                freq: freq,
-                maxFreq: maxFreq
+                id: id
             },
-
+            
             scratch: {
 
             },
@@ -209,11 +180,11 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
 }
 
 function makeEdgeLabel(freq, source, target, selection, action, input) {
-    let result = "";
-    if (freq && freq > 1) result += (freq + ": ");
-    if (/^done$/i.test(selection)) result += "Done";
-    else if (/^[a-z]*_table_c[0-9]+/i.test(selection)) result += input;
-    else result += (selection + "-" + input);
+    let result="";
+    if(freq && freq > 1) result+=(freq+": ");
+    if      (/^done$/i.test(selection)) result+= "Done";
+    else if (/^[a-z]*_table_c[0-9]+/i.test(selection)) result+=input;
+    else    result+=(selection+"-"+input);
     return result;
 }
 
@@ -222,7 +193,7 @@ function addEdge(jsonGraph, id, source, target, selection, action, input, freq, 
         group: 'edges',
 
         data: {
-            id: source + "-" + id + "-" + target,
+            id: source+"-"+id+"-"+target,
             CTATid: id,
             source: source,
             target: target,
@@ -232,7 +203,7 @@ function addEdge(jsonGraph, id, source, target, selection, action, input, freq, 
             info: makeEdgeLabel(freq, source, target, selection, action, input),  // was selection+"-"+action+"-"+input
             freq: freq,
             maxFreq: maxFreq,
-            correct: (/^CORRECT/i.test(actionType) ? 1 : 0)
+	    correct: (/^CORRECT/i.test(actionType) ? 1 : 0)
         }
     };
     jsonGraph.elements.push(edge);
