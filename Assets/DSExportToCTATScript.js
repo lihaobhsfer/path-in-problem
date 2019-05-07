@@ -450,7 +450,7 @@ function runTask1GivenJSON(ggraph) {
   //console.log("button pressed 2");
   cy.json(JSON.parse(buildJSON(graph, edgeFreqs)));
   var layout = cy.layout({
-    name: 'cose',
+    name: 'grid',
     fit: true,
     padding: 30,
     boundingBox: undefined,
@@ -459,7 +459,7 @@ function runTask1GivenJSON(ggraph) {
     componentSpacing: 80,
     nodeRepulsion: function (node) { return 1020480; },
     nodeOverlap: 4,
-    idealEdgeLength: function (edge) { return 200; },
+    idealEdgeLength: function (edge) { return 50; },
     edgeElasticity: function (edge) { return 20; },
     nestingFactor: 1.2,
     gravity: 0.1
@@ -583,8 +583,8 @@ function inputCompare(a, b) {
 
   // parse first then compare
   if (lp.logicParse(a) && lp.logicParse(b)) {
-    console.log("locale compare", a.localeCompare(b))
-    console.log("logic identical", lp.logicIdentical(a, b))
+    // console.log("locale compare", a.localeCompare(b))
+    // console.log("logic identical", lp.logicIdentical(a, b))
     return lp.logicIdentical(a, b) === true ? 0 : 1
 
   }
@@ -715,8 +715,8 @@ function buildGraphForProblem() {
 
 
   // for (i = 0; i < entries.length; i++) {
-  // testing for 2 students
-  for (i = 0; i < 10; i++) {
+    // testing for 2 students
+    for (i = 0; i < 20; i++) {
     var currentNode = startNode;
     var studentId = entries[i][0];
     var sais = entries[i][1];
@@ -735,7 +735,7 @@ function buildGraphForProblem() {
         // var defSAI = linksArray[j].getDefaultSAI();
         var defSAI = nodesArray[j].link.getDefaultSAI();
         console.log(defSAI.getInput())
-        console.log("logic stringify", lp.logicStringify(input))
+        // console.log("logic stringify", lp.logicStringify(input))
         if (defSAI.getSelection().localeCompare(selection) == 0 &&
           defSAI.getAction().localeCompare(action) == 0 &&
           inputCompare(defSAI.getInput(), input) == 0) {
@@ -748,7 +748,7 @@ function buildGraphForProblem() {
           for (var k = 0; k < edgesArray.length; k++) {
             if (edgesArray[k].getPrevNode() === currentNode.getNodeID() && edgesArray[k].getNextNode() === nodesArray[j].getNodeID()) {
               edgeFreqs[edgesArray[k].getUniqueID()] += 1
-              console.log("freq:",edgeFreqs[edgesArray[k].getUniqueID()])
+              console.log("freq:", edgeFreqs[edgesArray[k].getUniqueID()])
             }
           }
 
@@ -758,6 +758,24 @@ function buildGraphForProblem() {
         }
       }
       if (matched) {
+        var newLink = new CTATExampleTracerLink(edgeCounter, currentNode.getNodeID(), newNode.getNodeID());
+
+        newLink.setActionType(/^CORRECT/i.test(evaluation) ? CTATExampleTracerLink.CORRECT_ACTION : CTATExampleTracerLink.FIREABLE_BUGGY_ACTION);
+        var SelectionMatchers = new CTATMatcher();
+        var ActionMatchers = new CTATMatcher();
+        var InputMatchers = new CTATMatcher();
+        var actor = null;
+
+        var vectorMatcher = new CTATVectorMatcher(SelectionMatchers, ActionMatchers, InputMatchers, actor);
+        vectorMatcher.setDefaultSAI(new CTATSAI(selection, action, input, null));
+        //vectorMatcher.setCaseInsensitive(caseInsensitive);
+        //vectorMatcher.setLinkTriggered(linkTriggered);
+        newLink.setMatcher(vectorMatcher)
+        // OK so I need to make a new matcher and give it the selection, action, and input
+        graph.addLink(newLink, null);//don't worry about groups for now
+        edgesArray.push(newLink)
+
+
         continue;
       }
       //new edge otherwise
@@ -768,7 +786,7 @@ function buildGraphForProblem() {
       edgeFreqs[edgeCounter] = 1;
 
       var newLink = new CTATExampleTracerLink(edgeCounter, currentNode.getNodeID(), newNode.getNodeID());
-      
+
       newLink.setActionType(/^CORRECT/i.test(evaluation) ? CTATExampleTracerLink.CORRECT_ACTION : CTATExampleTracerLink.FIREABLE_BUGGY_ACTION);
       var SelectionMatchers = new CTATMatcher();
       var ActionMatchers = new CTATMatcher();

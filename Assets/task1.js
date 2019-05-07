@@ -5,7 +5,9 @@ function runTask1() {
     });
     var g = CTAT.ToolTutor.tutor.getGraph();
     cy.json(JSON.parse(buildJSON(g)));
-    var layout = cy.layout({ name: 'cose' });
+    var layout = cy.layout({ name: 'grid' });
+
+    console.log("building graph")
     layout.run();
 }
 
@@ -29,7 +31,7 @@ function buildJSON(graph, edgeFreqs) {
                 selector: 'node[id="0"]',
                 style: {
                     'background-color': 'purple',
-                    'label': 'data(id)',
+                    'label': 'data(info)',
                     "text-valign": "center",
                     "text-halign": "center"
                 }
@@ -53,7 +55,7 @@ function buildJSON(graph, edgeFreqs) {
                     'line-color': 'green',
                     'target-arrow-color': 'green',
                     'label': 'data(freq)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                    'width': 'mapData(freq, 0, ' + maxFreq + ', 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
                     'min-zoomed-font-size': '10'
@@ -65,8 +67,8 @@ function buildJSON(graph, edgeFreqs) {
                 style: {
                     'line-color': 'gray',
                     'target-arrow-color': 'gray',
-                    'label': 'data(info)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                    'label': 'data(freq)+data(info)',
+                    'width': 'mapData(freq, 0, ' + maxFreq + ', 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
                     'min-zoomed-font-size': '10'
@@ -79,7 +81,7 @@ function buildJSON(graph, edgeFreqs) {
                     'line-color': 'red',
                     'target-arrow-color': 'red',
                     'label': 'data(info)',
-                    'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
+                    'width': 'mapData(freq, 0, ' + maxFreq + ', 1, 20)',
                     'target-arrow-shape': 'triangle',
                     'curve-style': 'bezier',
                     'min-zoomed-font-size': '10'
@@ -95,10 +97,19 @@ function buildJSON(graph, edgeFreqs) {
     // I need to start with nodes!
 
     var links = graph.getLinks();//edges
+    let nodes = graph.getAllNodes();
+    console.log("nodes: ", nodes)
+    console.log("links: ", links)
+    console.log("graph: ", graph)
     for (i = 0; i < links.length; i++) {
+    
         var prevId = links[i].getPrevNode();
         var nextId = links[i].getNextNode();
         var matcher = links[i].getMatcher();
+    // for (i = 0; i < nodes.length; i++) {
+        // var prevId = nodes[i].link.getPrevNode();
+        // var nextId = nodes[i].link.getNextNode();
+        // var matcher = nodes[i].link.getMatcher();
 
         //add nodes if necessary
         if (!addedNodes.includes(prevId)) {

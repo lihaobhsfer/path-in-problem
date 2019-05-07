@@ -32279,7 +32279,8 @@ CTATExampleTracerGraph = function(isUnordered, youStartYouFinish, givenVT) {
     return true;
   }
   this.getAllNodes = function() {
-    return addedNodes;
+    // return addedNodes;
+    return nodes
   };
   function buildInLinks() {
     for (var i = 0;i < nodes.length;i++) {
