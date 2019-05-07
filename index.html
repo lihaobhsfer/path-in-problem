@@ -175,14 +175,14 @@
             <br>
 
 
-            <div class=inner-block>
+            <!-- <div class=inner-block>
                 <p style="font-size:16px"><b>3. Export</b></p>
                 <center style="width: 80%;">
                     <a href='#' class="myButton" onclick='downloadCSV({ filename: "output.csv" });'><b>Download
                             CSV</b></a>
                     <a href='#' class="myButton" onclick='saveBRD();'><b>Save BRD</b></a>
                 </center>
-            </div>
+            </div> -->
 
     </div>
 
@@ -193,10 +193,12 @@
             Pick a Problem
             <form id="problemChoicesForm">
             </form>
+
+            <input type="button" value="Show graph" class="myButton" id="MyButton" onclick="runTask1GivenJSON()" />
             <br>
             <br>
-            <label id="one" for="fileItem2" class="myButton" onclick="changeColor('one')">Select interface</b> <input
-                    id="fileItem2" type="file" style="display:none" /></label>
+            <!-- <label id="one" for="fileItem2" class="myButton" onclick="changeColor('one')">Select interface</b> <input
+                    id="fileItem2" type="file" style="display:none" /></label> -->
             <br>
             <br><br>
             Ordered?
@@ -205,13 +207,13 @@
                 <input type="radio" name="ordered" value="unordered">Unordered
             </form>
             <br>
-            <input type="button" value="Show graph" id="MyButton" onclick="runTask1GivenJSON()" />
-            <input type="button" value="See Selected Path in Interface" id="pathButton"
+            
+            <!-- <input type="button" value="See Selected Path in Interface" id="pathButton"
                 onclick="addPathToInterface()" />
             <input type="button" value="Add Selected (correct) Path to BG" id="bgAddButton" onclick="addPathToBG(1)" />
             <input type="button" value="Add Selected (incorrect) Path to BG" id="bgAddButton"
                 onclick="addPathToBG(0)" />
-            <input type="button" value="Mark Selected Path as Incomplete" id="bgAddButton" onclick="addPathToBG(-1)" />
+            <input type="button" value="Mark Selected Path as Incomplete" id="bgAddButton" onclick="addPathToBG(-1)" /> -->
             <br>
             <br>
             N most frequent paths starting from a:
