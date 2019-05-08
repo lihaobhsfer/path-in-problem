@@ -38,6 +38,16 @@ function buildJSON(graph, edgeFreqs) {
             },
 
             {
+                selector: 'node[outLinks=0]',
+                style:{
+                    'background-color': 'purple',
+                    'label': 'data(info)',
+                    "text-valign": "center",
+                    "text-halign": "center"
+                }
+            },
+
+            {
                 selector: 'edge',
                 style: {
                     // 'line-color': 'green',
@@ -106,29 +116,29 @@ function buildJSON(graph, edgeFreqs) {
         var prevId = links[i].getPrevNode();
         var nextId = links[i].getNextNode();
         var matcher = links[i].getMatcher();
-    // for (i = 0; i < nodes.length; i++) {
-        // var prevId = nodes[i].link.getPrevNode();
-        // var nextId = nodes[i].link.getNextNode();
-        // var matcher = nodes[i].link.getMatcher();
 
         //add nodes if necessary
         if (!addedNodes.includes(prevId)) {
             var prevNode = graph.getNode(prevId);
             var pos = prevNode.getVisualData();
+            var outLinks = prevNode.getOutLinks();
+            console.log("outlink prev:", outLinks.size)
             addNode(jsonGraph, prevId, pos ? parseInt(pos.x) : null,
                 pos ? parseInt(pos.y) : null, matcher.getSelection(),
                 matcher.getAction(), matcher.getInput(),
-                freq, maxFreq, links[i].getActionType());
+                freq, maxFreq, links[i].getActionType(), outLinks.size);
 
             addedNodes.push(prevId);
         }
         if (!addedNodes.includes(nextId)) {
             var nextNode = graph.getNode(nextId);
             var pos = nextNode.getVisualData();
+            var outLinks = nextNode.getOutLinks()
+            console.log("outlink next:", outLinks.size)
             addNode(jsonGraph, nextId, pos ? parseInt(pos.x) : null,
                 pos ? parseInt(pos.y) : null, matcher.getSelection(),
                 matcher.getAction(), matcher.getInput(),
-                freq, maxFreq, links[i].getActionType());
+                freq, maxFreq, links[i].getActionType(), outLinks.size);
             addedNodes.push(nextId);
         }
 
@@ -146,11 +156,10 @@ function buildJSON(graph, edgeFreqs) {
 }
 var BRDjson = null;
 
-function addNode(jsonGraph, id, x, y, source, target, selection, action, input, freq, maxFreq, actionType) {
+function addNode(jsonGraph, id, x, y, selection, action, input, freq, maxFreq, actionType, outLinks) {
     if (x == null) {
         var node = {
             group: 'nodes',
-
             data: {
                 id: id,
                 CTATid: id,
@@ -159,7 +168,8 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
                 input: input,
                 info: makeNodeLabel(freq, selection, action, input),  // was selection+"-"+action+"-"+input
                 freq: freq,
-                maxFreq: maxFreq
+                maxFreq: maxFreq,
+                outLinks: outLinks
             },
 
             scratch: {
@@ -195,7 +205,8 @@ function addNode(jsonGraph, id, x, y, source, target, selection, action, input, 
                 input: input,
                 info: makeEdgeLabel(freq, source, target, selection, action, input),  // was selection+"-"+action+"-"+input
                 freq: freq,
-                maxFreq: maxFreq
+                maxFreq: maxFreq,
+                outLinks: outLinks
             },
 
             scratch: {
