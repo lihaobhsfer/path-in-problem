@@ -13,5 +13,6 @@ or use a localhost to host the `index.html` file
 
 
 # Acknowledgement
-Thanks to Jonathan who shared previous work
+Thanks to Jonathan who shared previous work.
+
 Thanks to Prof. Vincent Aleven and Klaus Sutner for valuable suggestions and feedback
