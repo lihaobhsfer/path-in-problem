@@ -12,6 +12,8 @@ var interfaceFilePath;
 var elts = [];
 var g = null;
 
+let numberOfStudentInGraph = 10;
+
 
 
 
@@ -383,60 +385,6 @@ function runTask1GivenJSON(ggraph) {
     container: document.getElementById('cy'),
     hideLabelsOnViewport: true
   });
-  /*cy2 = cytoscape({
-      container: document.getElementById('cy2'),
-      hideLabelsOnViewport: false
-  });
-
-  cy2.json({
-      style: [
-          {
-              selector: 'node', 
-              style: {'background-color': 'green',
-                      'label': 'data(id)',
-                      "text-valign": "center",
-                      "text-halign": "center"
-              }
-          },
-
-          {
-              selector: 'node[id="0"]', 
-              style: {'background-color': 'purple',
-                      'label': 'data(id)',
-                      "text-valign": "center",
-                      "text-halign": "center"
-              }
-          },
-          
-          {
-              selector: 'edge[?correct]',
-              style: {'line-color': 'blue',
-                      'target-arrow-color': 'blue',
-                      'label': 'data(info)',
-                      //'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
-                      'target-arrow-shape': 'triangle',
-                      'curve-style': 'bezier',
-                      'min-zoomed-font-size': '10'
-              }
-          },
-
-          {
-              selector: 'edge[!correct]',
-              style: {'line-color': 'red',
-                      'target-arrow-color': 'red',
-                      'label': 'data(info)',
-                      //'width': 'mapData(freq, 0, '+maxFreq+', 1, 20)',
-                      'target-arrow-shape': 'triangle',
-                      'curve-style': 'bezier',
-                      'min-zoomed-font-size': '10'
-              }
-          }
-      ]
-  });*/
-
-
-
-
 
   if (ggraph) {
     graph = ggraph;
@@ -503,8 +451,6 @@ function runTask1GivenJSON(ggraph) {
   cy.nodes().on('select', function (event) {
     getSelectedPath();
   });
-
-
 
   document.getElementById("N_form").value = allPaths.length
   document.getElementById("N_form").text = allPaths.length
@@ -579,6 +525,8 @@ function inputCompare(a, b) {
   let vt = new CTATVariableTable()
   let lp = new CTATLogicParser(vt)
   if (a == "-1" && b == "-1")
+    return 0
+  if (a == "hint request" && b == "hint request")
     return 0
 
   // parse first then compare
@@ -716,7 +664,7 @@ function buildGraphForProblem() {
 
   // for (i = 0; i < entries.length; i++) {
     // testing for 2 students
-    for (i = 0; i < 20; i++) {
+    for (i = 0; i < numberOfStudentInGraph; i++) {
     var currentNode = startNode;
     var studentId = entries[i][0];
     var sais = entries[i][1];

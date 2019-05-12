@@ -40,7 +40,7 @@ function buildJSON(graph, edgeFreqs) {
             {
                 selector: 'node[outLinks=0]',
                 style:{
-                    'background-color': 'purple',
+                    'background-color': 'blue',
                     'label': 'data(info)',
                     "text-valign": "center",
                     "text-halign": "center"
@@ -90,6 +90,19 @@ function buildJSON(graph, edgeFreqs) {
                 style: {
                     'line-color': 'red',
                     'target-arrow-color': 'red',
+                    'label': 'data(info)',
+                    'width': 'mapData(freq, 0, ' + maxFreq + ', 1, 20)',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'bezier',
+                    'min-zoomed-font-size': '10'
+                }
+            },
+
+            {
+                selector: 'edge[selection="hint"]',
+                style: {
+                    'line-color': 'yellow',
+                    'target-arrow-color': 'yellow',
                     'label': 'data(info)',
                     'width': 'mapData(freq, 0, ' + maxFreq + ', 1, 20)',
                     'target-arrow-shape': 'triangle',
